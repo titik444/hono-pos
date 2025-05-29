@@ -22,7 +22,7 @@ class AccessValidation {
     // check if token is valid
     try {
       const payload = await verifyToken(token);
-      c.set("user_id", payload.id);
+      c.set("user", payload.sub);
       await next();
     } catch {
       return c.json({ message: "Unauthorized", data: null }, 401);

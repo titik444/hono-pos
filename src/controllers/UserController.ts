@@ -7,6 +7,7 @@ import {
   generateRefreshToken,
   verifyRefreshToken,
 } from "../utils/Jwt";
+import { User } from "@prisma/client";
 
 class UserController {
   async verifyUser(c: Context) {
@@ -75,6 +76,12 @@ class UserController {
     } catch {
       return c.json({ message: "Unauthorized", data: null }, 401);
     }
+  }
+
+  async getCurrentUser(c: Context) {
+    const user = c.get("user") as User;
+
+    return c.json({ message: "Get current user success", data: user });
   }
 }
 

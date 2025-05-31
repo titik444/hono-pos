@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client";
 import prisma from "../../src/utils/prismaClient";
 
 export async function seedUser() {
@@ -11,6 +12,7 @@ export async function seedUser() {
         algorithm: "bcrypt",
         cost: 10,
       }),
+      role: Role.SELLER,
     },
   ];
 

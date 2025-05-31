@@ -14,12 +14,107 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement()) @map("id")
+  id        String     @id @default(cuid()) @map("id")
+  name      String     @map("name")
+  email     String     @unique @map("email")
+  role      Role       @map("role")
+  status    UserStatus @default(ACTIVE) @map("status")
+  password  String     @map("password")
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  Product   Product[]
+  Order     Order[]
+
+  @@map("user")
+}
+
+enum Role {
+  ADMIN
+  SELLER
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model Category {
+  id        String   @id @default(cuid()) @map("id")
   name      String   @map("name")
-  email     String   @unique @map("email")
-  password  String   @map("password")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("user")
+  products Product[]
+
+  @@map("category")
+}
+
+model Product {
+  id          String   @id @default(cuid()) @map("id")
+  name        String   @map("name")
+  description String?  @map("description")
+  imageUrl    String?  @map("image_url")
+  price       Int      @map("price")
+  stock       Int      @map("stock")
+  available   Boolean  @default(true) @map("available")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  sellerId   String @map("seller_id")
+  categoryId String @map("category_id")
+
+  seller     User        @relation(fields: [sellerId], references: [id])
+  category   Category    @relation(fields: [categoryId], references: [id])
+  orderItems OrderItem[]
+
+  @@map("product")
+}
+
+model Order {
+  id          String      @id @default(cuid()) @map("id")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  status      OrderStatus @default(PENDING) @map("status")
+  totalAmount Int         @map("total_amount")
+
+  userId  String      @map("user_id")
+  user    User        @relation(fields: [userId], references: [id])
+  items   OrderItem[]
+  payment Payment?
+
+  @@map("order")
+}
+
+model OrderItem {
+  id       String @id @default(cuid()) @map("id")
+  quantity Int    @map("quantity")
+  price    Int    @map("price")
+
+  orderId   String @map("order_id")
+  productId String @map("product_id")
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("order_item")
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  CANCELLED
+}
+
+model Payment {
+  id     String        @id @default(cuid()) @map("id")
+  method PaymentMethod @map("method")
+  paidAt DateTime      @default(now()) @map("paid_at")
+
+  orderId String @unique @map("order_id")
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  @@map("payment")
+}
+
+enum PaymentMethod {
+  CASH
 }

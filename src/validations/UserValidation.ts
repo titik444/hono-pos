@@ -15,7 +15,7 @@ export const strongPasswordSchema = z
     message: "Password must contain at least one special character",
   });
 
-export const validateUser: ZodType = z
+export const userValidation: ZodType = z
   .object({
     name: z.string().min(1, { message: "Name cannot be empty" }),
     email: z.string().email({ message: "Invalid email format" }),

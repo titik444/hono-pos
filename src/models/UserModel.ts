@@ -46,7 +46,7 @@ class UserModel implements IUserModel {
    * @throws {Error} If the user is not found.
    * @throws {Error} If the email already exists.
    */
-  async update(id: number, user: User): Promise<User> {
+  async update(id: string, user: User): Promise<User> {
     if (user.password && user.password.length > 0) {
       user.password = await this.hashPassword(user.password);
     }
@@ -72,7 +72,7 @@ class UserModel implements IUserModel {
    * @returns A promise that resolves to the deleted user.
    * @throws {Error} If the user is not found.
    */
-  async delete(id: number): Promise<User> {
+  async delete(id: string): Promise<User> {
     return await prisma.user.delete({ where: { id } }).then((user) => {
       user.password = "********";
       return user;
@@ -89,7 +89,7 @@ class UserModel implements IUserModel {
     return await prisma.user.findUnique({ where: { email } });
   }
 
-  async findById(id: number): Promise<User | null> {
+  async findById(id: string): Promise<User | null> {
     return await prisma.user.findUnique({ where: { id } }).then((user) => {
       if (user) {
         user.password = "********";

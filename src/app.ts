@@ -3,11 +3,13 @@ import { cors } from "hono/cors";
 import Log from "./utils/Logger";
 import prisma from "./utils/prismaClient";
 import userRoute from "./routes/userRoute";
+import categoryRoute from "./routes/categoryRoute";
 
 const app = new Hono();
 
 app.use("*", cors());
 app.route("/api", userRoute);
+app.route("/api", categoryRoute);
 
 app.get("/", (c) => {
   return c.text("Hello Hono!");

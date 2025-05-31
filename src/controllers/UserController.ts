@@ -63,7 +63,7 @@ class UserController {
     }
     try {
       const payload = await verifyRefreshToken(tokenRefresh);
-      const user = await UserModel.findById(Number(payload.id));
+      const user = await UserModel.findById(String(payload.id));
       if (!user) {
         return c.json({ message: "Unauthorized", data: null }, 401);
       }
